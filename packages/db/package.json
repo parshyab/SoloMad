@@ -1,0 +1,17 @@
+{
+  "name": "@solomad/db",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "migrate": "node dist/migrate.js",
+    "seed": "node dist/seed.js"
+  },
+  "dependencies": {
+    "@types/node": "26.6.4",
+    "@solomad/config": "workspace:*",
+    "postgres": "3.4.9"
+  }
+}

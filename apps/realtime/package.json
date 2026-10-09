@@ -1,0 +1,23 @@
+{
+  "name": "@solomad/realtime",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node --watch dist/main.js",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@types/node": "26.6.4",
+    "@socket.io/redis-streams-adapter": "0.3.1",
+    "@solomad/config": "workspace:*",
+    "@solomad/db": "workspace:*",
+    "@solomad/domain": "workspace:*",
+    "ioredis": "6.0.0",
+    "socket.io": "4.8.4",
+    "socket.io-client": "4.8.4"
+  },
+  "devDependencies": {
+    "jose": "6.2.12"
+  }
+}

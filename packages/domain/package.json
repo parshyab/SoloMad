@@ -1,0 +1,16 @@
+{
+  "name": "@solomad/domain",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@types/node": "26.6.4",
+    "jose": "6.2.12",
+    "postgres": "3.4.9",
+    "zod": "3.25.76"
+  }
+}

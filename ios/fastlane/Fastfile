@@ -1,0 +1,15 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Archive the Release scheme. Requires a full Xcode and distribution signing."
+  lane :archive do
+    UI.user_error!("Set APP_STORE_CONNECT_API_KEY_PATH outside the repo before uploading.") unless ENV["APP_STORE_CONNECT_API_KEY_PATH"]
+    build_app(
+      project: "ios/NomadTable.xcodeproj",
+      scheme: "NomadTable",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: "ios/fastlane/ExportOptions.plist"
+    )
+  end
+end

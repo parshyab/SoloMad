@@ -1,0 +1,7 @@
+API_BASE_URL = https:/$()/api.solomad.example
+REALTIME_BASE_URL = https:/$()/realtime.solomad.example
+// Owner-supplied hosted project URL and publishable key. Never put a secret/service_role key here.
+SUPABASE_URL =
+SUPABASE_PUBLISHABLE_KEY =
+AUTH_MODE = supabase
+PRODUCT_BUNDLE_IDENTIFIER = app.solomad.ios

@@ -1,0 +1,15 @@
+{
+  "name": "@solomad/config",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch --preserveWatchOutput"
+  },
+  "dependencies": {
+    "@types/node": "26.6.4",
+    "zod": "3.25.76"
+  }
+}

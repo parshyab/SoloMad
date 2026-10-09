@@ -1,0 +1,17 @@
+{
+  "name": "@solomad/worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "node --watch dist/main.js",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@types/node": "26.6.4",
+    "@aws-sdk/client-sqs": "3.1147.0",
+    "@solomad/config": "workspace:*",
+    "@solomad/db": "workspace:*",
+    "@solomad/domain": "workspace:*"
+  }
+}

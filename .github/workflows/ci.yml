@@ -1,0 +1,58 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: solomad
+          POSTGRES_PASSWORD: solomad
+          POSTGRES_DB: solomad
+        ports: ["5432:5432"]
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    env:
+      DATABASE_URL: postgres://solomad:solomad@127.0.0.1:5432/solomad
+      REDIS_URL: redis://127.0.0.1:6379
+      AUTH_MODE: test
+      APP_ENV: test
+      TEST_AUTH_SECRET: ci-test-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.8.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm db:migrate
+      - run: pnpm test:integration
+      - run: pnpm openapi:check
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift package tests
+        run: swift run --package-path ios/Packages/NomadTableAPIClient DecodeCheck
+      - name: Shared scheme
+        run: |
+          if ! xcodebuild -version >/dev/null 2>&1; then
+            echo "Native scheme build was not run. This runner has no usable xcodebuild."
+            exit 1
+          fi
+          make ios-build
+          make ios-test

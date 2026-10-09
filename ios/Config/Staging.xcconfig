@@ -1,0 +1,8 @@
+API_BASE_URL = https:/$()/staging-api.example.invalid
+REALTIME_BASE_URL = https:/$()/staging-realtime.example.invalid
+SUPABASE_URL =
+SUPABASE_PUBLISHABLE_KEY =
+AUTH_MODE = supabase
+PRODUCT_BUNDLE_IDENTIFIER = app.solomad.ios
+// Generated, gitignored, client-safe overlay. Empty SUPABASE_URL stays empty; it does not fall back to localhost.
+#include? "Staging.local.xcconfig"

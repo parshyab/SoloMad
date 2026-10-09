@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>APIBaseURL</key>
+	<string>$(API_BASE_URL)</string>
+	<key>CFBundleDisplayName</key>
+	<string>solomad</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>app.solomad.ios.auth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app.solomad.ios</string>
+			</array>
+		</dict>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>solomad uses the camera for profile verification.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>solomad uses your location to show activities near you. You can choose a city instead.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>solomad uses photos you choose for your profile and chats.</string>
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>solomad sends alerts for activities, chats, and trips you join.</string>
+	<key>RealtimeBaseURL</key>
+	<string>$(REALTIME_BASE_URL)</string>
+	<key>SupabasePublishableKey</key>
+	<string>$(SUPABASE_PUBLISHABLE_KEY)</string>
+	<key>SupabaseURL</key>
+	<string>$(SUPABASE_URL)</string>
+	<key>UILaunchScreen</key>
+	<dict/>
+</dict>
+</plist>

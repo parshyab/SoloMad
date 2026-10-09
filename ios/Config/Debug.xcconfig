@@ -1,0 +1,8 @@
+API_BASE_URL = http:/$()/127.0.0.1:3000
+REALTIME_BASE_URL = http:/$()/127.0.0.1:3001
+SUPABASE_URL = http:/$()/127.0.0.1:55421
+SUPABASE_PUBLISHABLE_KEY =
+AUTH_MODE = supabase
+PRODUCT_BUNDLE_IDENTIFIER = app.solomad.ios
+// Written by `make supabase-start` with the local CLI publishable key. Only public client values belong here.
+#include? "Local.xcconfig"

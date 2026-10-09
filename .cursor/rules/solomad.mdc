@@ -1,0 +1,14 @@
+---
+description: solomad product constraints
+alwaysApply: true
+---
+
+The product name in the interface is solomad. The three tabs are Discover, Trips, and Chats.
+
+Production and staging must reject emulator endpoints, fixture providers, authentication bypasses, test entitlement overrides, and missing critical configuration.
+
+Do not invent credentials, App Store products, cloud resources, domains, provider responses, successful builds, deployments, or benchmark results.
+
+Offline joins must not claim a place was reserved. Birth dates stay private. Client-supplied user ids and premium flags are not authorization.
+
+PostgreSQL is the authority for membership, entitlements, and message history.
