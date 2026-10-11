@@ -22,6 +22,49 @@ resource "aws_subnet" "private" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 }
 
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+  tags   = { Name = var.name }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.main.id
+  }
+  tags = { Name = "${var.name}-public" }
+}
+
+resource "aws_route_table_association" "public" {
+  count          = length(aws_subnet.public)
+  subnet_id      = aws_subnet.public[count.index].id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_security_group" "alb" {
+  name   = "${var.name}-alb"
+  vpc_id = aws_vpc.main.id
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "database" {
   name   = "${var.name}-database"
   vpc_id = aws_vpc.main.id
@@ -50,6 +93,7 @@ resource "aws_db_subnet_group" "main" {
 }
 
 resource "aws_rds_cluster" "main" {
+  count                       = var.enable_aurora_cluster ? 1 : 0
   cluster_identifier          = "${var.name}-aurora"
   engine                      = "aurora-postgresql"
   engine_mode                 = "provisioned"
@@ -59,7 +103,7 @@ resource "aws_rds_cluster" "main" {
   db_subnet_group_name        = aws_db_subnet_group.main.name
   vpc_security_group_ids      = [aws_security_group.database.id]
   storage_encrypted           = true
-  backup_retention_period     = 7
+  backup_retention_period     = var.db_backup_retention_days
   skip_final_snapshot         = false
   final_snapshot_identifier   = "${var.name}-final"
   serverlessv2_scaling_configuration {
@@ -69,11 +113,11 @@ resource "aws_rds_cluster" "main" {
 }
 
 resource "aws_rds_cluster_instance" "main" {
-  count              = 2
+  count              = var.enable_aurora_cluster ? var.db_instance_count : 0
   identifier         = "${var.name}-aurora-${count.index}"
-  cluster_identifier = aws_rds_cluster.main.id
+  cluster_identifier = aws_rds_cluster.main[0].id
   instance_class     = "db.serverless"
-  engine             = aws_rds_cluster.main.engine
+  engine             = aws_rds_cluster.main[0].engine
 }
 
 resource "aws_elasticache_subnet_group" "main" {
@@ -118,6 +162,7 @@ resource "aws_s3_bucket_public_access_block" "media" {
 resource "aws_lb" "main" {
   name               = "${var.name}-alb"
   load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
   subnets            = aws_subnet.public[*].id
   idle_timeout       = 120
 }
@@ -127,4 +172,6 @@ resource "aws_ecs_cluster" "main" { name = var.name }
 output "alb_dns_name" { value = aws_lb.main.dns_name }
 output "media_bucket" { value = aws_s3_bucket.media.bucket }
 output "queue_url" { value = aws_sqs_queue.work.url }
-output "database_endpoint" { value = aws_rds_cluster.main.endpoint }
+output "database_endpoint" { value = try(aws_rds_cluster.main[0].endpoint, null) }
+output "database_secret_arn" { value = try(aws_rds_cluster.main[0].master_user_secret[0].secret_arn, null) }
+output "redis_primary_endpoint" { value = aws_elasticache_replication_group.main.primary_endpoint_address }

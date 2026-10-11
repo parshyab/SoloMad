@@ -21,6 +21,17 @@ export function parseDotenv(text) {
   return values;
 }
 
+export function serializeDotenv(values) {
+  const lines = [];
+  for (const [key, value] of Object.entries(values)) {
+    if (value === undefined) continue;
+    const needsQuotes = /[\s#="'\\]/.test(value) || value.includes("$");
+    const escaped = needsQuotes ? `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"` : value;
+    lines.push(`${key}=${escaped}`);
+  }
+  return `${lines.join("\n")}\n`;
+}
+
 export function assertDotenvParser() {
   const parsed = parseDotenv('QUOTED="name@host"\nSPECIAL="p@ss$"\nLITERAL=$HOME\nEMPTY=\n# hidden\n');
   if (parsed.QUOTED !== "name@host" || parsed.SPECIAL !== "p@ss$" || parsed.LITERAL !== "$HOME" || parsed.EMPTY !== "") {

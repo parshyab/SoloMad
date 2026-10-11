@@ -11,8 +11,21 @@ import { verifyIdentity } from "./identity";
 export type Gateway = { io: Server; httpServer: HttpServer; close: () => Promise<void> };
 
 export async function createGateway(env: AppEnv, sql: Sql, verify: (token: string) => Promise<VerifiedIdentity>): Promise<Gateway> {
-  const httpServer = createServer();
-  const redis = env.REDIS_URL ? new Redis(env.REDIS_URL, { maxRetriesPerRequest: 1 }) : null;
+  const httpServer = createServer((req, res) => {
+    if (req.url === "/health" && req.method === "GET") {
+      res.writeHead(200, { "content-type": "application/json" });
+      res.end('{"ok":true}');
+      return;
+    }
+    res.writeHead(404);
+    res.end();
+  });
+  const redis = env.REDIS_URL
+    ? new Redis(env.REDIS_URL, {
+        maxRetriesPerRequest: 1,
+        tls: env.REDIS_URL.startsWith("rediss://") ? {} : undefined,
+      })
+    : null;
   const io = new Server(httpServer, {
     transports: ["websocket"],
     cors: { origin: env.CORS_ORIGINS.split(",").map((item) => item.trim()) },

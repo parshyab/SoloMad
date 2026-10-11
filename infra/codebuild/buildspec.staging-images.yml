@@ -1,0 +1,20 @@
+version: 0.2
+env:
+  shell: bash
+phases:
+  pre_build:
+    commands:
+      - corepack enable
+      - corepack prepare pnpm@12.8.1 --activate
+      - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+  build:
+    commands:
+      - test -f tsconfig.base.json
+      - docker build --platform linux/amd64 -f infra/docker/Dockerfile --build-arg SERVICE=api -t "$ECR_API_REPO:latest" .
+      - docker build --platform linux/amd64 -f infra/docker/Dockerfile --build-arg SERVICE=realtime -t "$ECR_REALTIME_REPO:latest" .
+      - docker push "$ECR_API_REPO:latest"
+      - docker push "$ECR_REALTIME_REPO:latest"
+  post_build:
+    commands:
+      - aws ecs update-service --cluster solomad-staging --service solomad-staging-api --force-new-deployment --region "$AWS_REGION" --no-cli-pager
+      - aws ecs update-service --cluster solomad-staging --service solomad-staging-realtime --force-new-deployment --region "$AWS_REGION" --no-cli-pager

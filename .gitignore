@@ -33,11 +33,17 @@ GoogleService-Info.plist
 tools/xcodegen
 .tools-src/
 tools/terraform/
+tools/aws-cli/
+tools/colima/
+tools/lima/
+tools/docker-static/
 supabase/signing_keys.json
 supabase/.temp/
 supabase/.branches/
 .env.supabase.local
 .env.supabase.staging.local
+.env.staging.secrets.local
+.env.staging.operator.local
 ios/Config/Local.xcconfig
 ios/Config/Staging.local.xcconfig
 infra/terraform/**/.terraform/

@@ -1,7 +1,7 @@
 terraform {
   required_version = ">= 1.10.0"
   backend "s3" {
-    bucket       = "REPLACE_WITH_STATE_BUCKET"
+    bucket       = "solomad-tf-state-147435199603-us-east-1"
     key          = "solomad/production/terraform.tfstate"
     region       = "us-east-1"
     encrypt      = true
@@ -21,5 +21,5 @@ module "stack" {
   api_desired_count      = 2
   realtime_desired_count = 2
   worker_desired_count   = 2
-  domain_name            = "REPLACE_WITH_PRODUCTION_DOMAIN"
+  domain_name            = "solomad.app"
 }

@@ -1,4 +1,4 @@
-.PHONY: doctor bootstrap setup backend supabase-start supabase-stop supabase-seed dev auth-smoke supabase-hosted-auth supabase-live-smoke staging-check ios-generate ios-resolve ios-build ios-test ios-run ios-staging-build ios-staging-auth ios-staging-run ios-archive verify-release release-check terraform-check
+.PHONY: doctor bootstrap setup backend supabase-start supabase-stop supabase-seed dev auth-smoke supabase-hosted-auth supabase-live-smoke staging-check staging-db-migrate staging-dns-status staging-push-runtime-secret staging-deploy-ecs staging-enable-https staging-merge-operator-env ios-generate ios-resolve ios-build ios-test ios-run ios-staging-build ios-staging-auth ios-staging-run ios-archive verify-release release-check terraform-check terraform-apply-staging sync-staging-infra
 
 SIMULATOR_ID = $(shell node scripts/simulator.mjs)
 # Ad-hoc "sign to run locally" for the simulator only: no certificate or Team ID, but the Keychain works.
@@ -88,6 +88,34 @@ verify-release:
 
 release-check:
 	node scripts/release-check.mjs
+
+terraform-apply-staging:
+	@test -n "$(TERRAFORM)" || { echo "terraform not found; see docs/DEPLOYMENT.md"; exit 1; }
+	cd infra/terraform/environments/staging && $(abspath $(TERRAFORM)) apply -input=false -auto-approve
+
+sync-staging-infra:
+	node scripts/sync-staging-infra-env.mjs
+
+staging-db-migrate:
+	node scripts/staging-db-migrate.mjs
+
+staging-dns-status:
+	node scripts/staging-dns-status.mjs
+
+staging-push-runtime-secret:
+	node scripts/push-staging-runtime-secret.mjs
+
+staging-deploy-ecs:
+	node scripts/deploy-staging-ecs.mjs
+
+staging-enable-https:
+	cd infra/terraform/environments/staging && $(abspath $(TERRAFORM)) apply -input=false -auto-approve -var=enable_https_listener=true
+
+staging-finish-https:
+	node scripts/staging-finish-https.mjs
+
+staging-merge-operator-env:
+	node scripts/merge-staging-operator-env.mjs
 
 terraform-check:
 	@test -n "$(TERRAFORM)" || { echo "terraform not found; see docs/DEPLOYMENT.md"; exit 1; }

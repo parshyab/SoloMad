@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@types/node": "26.6.4",
+    "@aws-sdk/rds-signer": "3.1147.0",
     "@solomad/config": "workspace:*",
     "postgres": "3.4.9"
   }
